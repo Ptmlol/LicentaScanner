@@ -3,9 +3,9 @@
 import vulnerability_scanner
 
 def main():
-    login_url = "http://192.168.108.143/dvwa/login.php"
-    target_url = "http://192.168.108.143/dvwa/"
-    links_to_ignore = ["http://192.168.108.143/dvwa/logout.php"]
+    login_url = "http://192.168.0.171/dvwa/login.php"
+    target_url = "http://192.168.0.171/dvwa/"
+    links_to_ignore = ["http://192.168.0.171/dvwa/logout.php"]
     username = "admin"
     wrong_username = "certainwrong"
     username_field = "username"
@@ -14,8 +14,8 @@ def main():
     pw_file = "passwd.txt"
     known_password = "password"
     certain_wrong_passwd = "onlyfortest"
-    logout_url = "http://192.168.108.143/dvwa/logout.php"
-    try_brute_force = vulnerability_scanner.LoginPageTests(username, login_url, pw_file, wrong_username, known_password, certain_wrong_passwd, logout_url).get_correct_password() # in acelasi timp verifica multe..
+    logout_url = "http://192.168.0.171/dvwa/logout.php"
+    try_brute_force = vulnerability_scanner.login_tests(username, login_url, pw_file, wrong_username, known_password, certain_wrong_passwd, logout_url).get_correct_password() # in acelasi timp verifica multe..
     password = try_brute_force
     if try_brute_force:
         vuln_scanner = vulnerability_scanner.Scanner(target_url, links_to_ignore)
