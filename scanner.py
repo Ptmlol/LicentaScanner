@@ -1,33 +1,49 @@
 #!usr/bin/env python
 
 import vulnerability_scanner
+from configparser import ConfigParser
+
+config_object = ConfigParser()
+config_object.read("config.ini")
 
 
 def main():
-    login_url = "http://192.168.0.171/dvwa/login.php"
-    target_url = "http://192.168.0.171/dvwa/"
-    links_to_ignore = ["http://192.168.0.171/dvwa/logout.php"]
-    username = "admin"
-    wrong_username = "certainwrong"
-    username_field = "username"
-    password_field = "password"
-    login_field = "Login"
-    pw_file = "passwd.txt"
-    known_password = "password"
-    certain_wrong_passwd = "onlyfortest"
-    logout_url = "http://192.168.0.171/dvwa/logout.php"
-    try_brute_force = vulnerability_scanner.login_tests(username, login_url, pw_file, wrong_username, known_password, certain_wrong_passwd, logout_url).get_correct_password() # in acelasi timp verifica multe..
-    password = try_brute_force
-    if try_brute_force:
-        vuln_scanner = vulnerability_scanner.Scanner(target_url, links_to_ignore)
-        data_dict = {username_field: username, password_field: password, login_field: "submit"}
-        vuln_scanner.session.post(login_url, data=data_dict)
+    ignored_list = [x.strip() for x in config_object["WEBURL"]["ignored"].split(',')]
+    try_brute_force = vulnerability_scanner.LoginTests(
+        config_object["CREDENTIAL"]["username"],
+        config_object["WEBURL"]["login"],
+        config_object["FILE"]["password_dict"],
+        config_object["CREDENTIAL"]["wrong_username"],
+        config_object["CREDENTIAL"]["known_password"],
+        config_object["CREDENTIAL"]["certain_wrong_passwd"],
+        config_object["WEBURL"]["logout"]
+        )
+    found_password = try_brute_force.get_correct_password()
+
+    if found_password:
+        vuln_scanner = vulnerability_scanner.Scanner(
+            config_object["WEBURL"]["target"],
+            ignored_list
+        )
+        data_dict = {
+            config_object["CREDENTIAL"]["username_field"]: config_object["CREDENTIAL"]["username"],
+            config_object["CREDENTIAL"]["password_field"]: found_password,
+            config_object["CREDENTIAL"]["login_field"]: config_object["CREDENTIAL"]["submit_field"]
+        }
+        vuln_scanner.session.post(config_object["WEBURL"]["login"], data=data_dict)
         vuln_scanner.run_scanner()
     else:
-        print("\n[~~] No Password Found From BruteForce Test!\n" + "[~~] Proceeding With Manual Input Password\n")
-        vuln_scanner = vulnerability_scanner.Scanner(target_url, links_to_ignore)
-        data_dict = {username_field: username, password_field: known_password, login_field: "submit"}
-        vuln_scanner.session.post(login_url, data=data_dict)
+        print("OK! No Password Found From BruteForce Test!", "Proceeding With Manual Input Password\n")
+        vuln_scanner = vulnerability_scanner.Scanner(
+            config_object["WEBURL"]["target"],
+            ignored_list
+        )
+        data_dict = {
+            config_object["CREDENTIAL"]["username_field"]: config_object["CREDENTIAL"]["username"],
+            config_object["CREDENTIAL"]["password_field"]: config_object["CREDENTIAL"]["known_password"],
+            config_object["CREDENTIAL"]["login_field"]: config_object["CREDENTIAL"]["submit_field"]
+        }
+        vuln_scanner.session.post(config_object["WEBURL"]["login"], data=data_dict)
         vuln_scanner.run_scanner()
 
 
