@@ -2,6 +2,7 @@
 
 import vulnerability_scanner
 
+
 def main():
     login_url = "http://192.168.0.171/dvwa/login.php"
     target_url = "http://192.168.0.171/dvwa/"
@@ -28,5 +29,7 @@ def main():
         data_dict = {username_field: username, password_field: known_password, login_field: "submit"}
         vuln_scanner.session.post(login_url, data=data_dict)
         vuln_scanner.run_scanner()
+
+
 if __name__ == "__main__":
     main()

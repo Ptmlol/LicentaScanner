@@ -120,3 +120,4 @@ bruteforce.py
 chromedriver.exe
 interceptor.py
 testscript.py
+createconf.py
