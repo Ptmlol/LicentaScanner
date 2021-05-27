@@ -65,12 +65,12 @@ if __name__ == "__main__":
 
     # Clears files if exists
     open('Report.txt', 'w').close()
-    open('Web Application Link Map.txt', 'w').close()
+    open('Web Application Map.txt', 'w').close()
     open('Error Log.txt', 'w').close()
 
     # Appends to emptied file
     rep_file = open("Report.txt", 'a')
-    arch_file = open('Web Application Link Map.txt', 'a')
+    arch_file = open('Web Application Map.txt', 'a')
     err_file = open('Error Log.txt', 'a')
 
     # Runs program
