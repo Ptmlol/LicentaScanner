@@ -3,21 +3,14 @@
 import vulnerability_scanner
 from configparser import ConfigParser
 
-config_object = ConfigParser()
-config_object.read("config.ini")
 
-
-def main():
-    # clears file if exits
-    open('Report.txt', 'w').close()
-    open('Web Application Link Map.txt', 'w').close()
-
-    # appends to cleared file
-    report_file = open("Report.txt", 'a')
-    map_file = open('Web Application Link Map.txt', 'a')
+def main(report_file, map_file, error_file):
     print("\t\t\t\t\t\t\t\t[@@@]\t\t\t\tREPORT\t\t\t\t[@@@]\n\n", file=report_file)
     print("\n\t\t[LOGIN REPORT]", file=report_file)
+    print("\t\t[ERROR REPORT]", file=error_file)
+
     ignored_list = [x.strip() for x in config_object["WEBURL"]["ignored"].split(',')]
+
     try_brute_force = vulnerability_scanner.LoginTests(
         config_object["CREDENTIAL"]["username"],
         config_object["WEBURL"]["login"],
@@ -26,7 +19,8 @@ def main():
         config_object["CREDENTIAL"]["known_password"],
         config_object["CREDENTIAL"]["certain_wrong_passwd"],
         config_object["WEBURL"]["logout"],
-        report_file
+        report_file,
+        error_file
     )
     found_password = try_brute_force.get_correct_password()
 
@@ -35,7 +29,8 @@ def main():
             config_object["WEBURL"]["target"],
             ignored_list,
             report_file,
-            map_file
+            map_file,
+            error_file
         )
         data_dict = {
             config_object["CREDENTIAL"]["username_field"]: config_object["CREDENTIAL"]["username"],
@@ -51,7 +46,8 @@ def main():
             config_object["WEBURL"]["target"],
             ignored_list,
             report_file,
-            map_file
+            map_file,
+            error_file
         )
         data_dict = {
             config_object["CREDENTIAL"]["username_field"]: config_object["CREDENTIAL"]["username"],
@@ -63,4 +59,24 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    # Create Config Object
+    config_object = ConfigParser()
+    config_object.read("config.ini")
+
+    # Clears files if exists
+    open('Report.txt', 'w').close()
+    open('Web Application Link Map.txt', 'w').close()
+    open('Error Log.txt', 'w').close()
+
+    # Appends to emptied file
+    rep_file = open("Report.txt", 'a')
+    arch_file = open('Web Application Link Map.txt', 'a')
+    err_file = open('Error Log.txt', 'a')
+
+    # Runs program
+    main(rep_file, arch_file, err_file)
+
+    # Close files
+    rep_file.close()
+    arch_file.close()
+    err_file.close()
