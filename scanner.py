@@ -5,7 +5,7 @@ from configparser import ConfigParser
 
 
 def main(report_file, map_file, error_file):
-    print("\t\t\t\t\t\t\t\t[@@@]\t\t\t\tREPORT\t\t\t\t[@@@]\n\n", file=report_file)
+    print("\t\t\t\t\t\t[@@@]\t\t\tREPORT\t\t\t[@@@]\n\n", file=report_file)
     print("\n\t\t[LOGIN REPORT]", file=report_file)
     print("\t\t[ERROR REPORT]", file=error_file)
 
