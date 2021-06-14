@@ -1,2 +1,0 @@
-
-[ERROR] Something went wrong in main function. Error:  argument of type 'ConnectionError' is not iterable
